@@ -20,6 +20,31 @@ def middleNode(linkedList):
     return slow_pointer
 
 
+def middleNode(linkedList):
+    # NOTE: a b c -> b c
+    #       0 1 2
+    #       a b c d -> c d
+    #       0 1 2 3
+
+    head = linkedList
+    count = 0
+
+    while head is not None:
+        count += 1
+        head = head.next
+
+    # NOTE: We separate a number of elements from their indexes.
+    middle_index = count // 2
+
+    head = linkedList
+
+    while head is not None and middle_index > 0:
+        middle_index -= 1
+        head = head.next
+
+    return head
+
+
 def test():
     one = LinkedList(value=1)
     two = LinkedList(value=2)

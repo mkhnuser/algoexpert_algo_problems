@@ -87,6 +87,9 @@ def find_turning_point_index_recursively(array, n, left_pointer, right_pointer):
         return right_sub_array_turning_point_index
 
 
+### NOTE: Solution number 1 ends here.
+
+
 def test():
     assert shiftedBinarySearch([4, 1, 2, 3], 3) == 3
     assert shiftedBinarySearch([2, 3, 4, 1], 3) == 1

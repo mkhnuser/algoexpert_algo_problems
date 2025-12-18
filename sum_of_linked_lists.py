@@ -55,6 +55,46 @@ def sumOfLinkedLists(linkedListOne, linkedListTwo):
     return head_node
 
 
+def sumOfLinkedLists(linkedListOne, linkedListTwo):
+    # NOTE: Example.
+    # 2 4 7 1 = 1742
+    # 9 4 5 = 549
+    # Their sum: 2291 -> we output: 1 9 2 2 (as a new list).
+    dummy_node = LinkedList(value=-1)
+    prev = dummy_node
+    carry = 0
+
+    # NOTE: We need to reset the lists to their initial states.
+    # After we are done.
+    initial_one_head = linkedListOne
+    initial_two_head = linkedListTwo
+    initial_one_next = linkedListOne.next
+    initial_two_next = linkedListTwo.next
+
+    try:
+        while linkedListOne is not None or linkedListTwo is not None:
+            value_one = linkedListOne.value if linkedListOne else 0
+            value_two = linkedListTwo.value if linkedListTwo else 0
+            summation = value_one + value_two + carry
+            carry, remainder = divmod(summation, 10)
+            res = LinkedList(value=remainder)
+            prev.next = res
+            prev = res
+
+            if linkedListOne is not None:
+                linkedListOne = linkedListOne.next
+            if linkedListTwo is not None:
+                linkedListTwo = linkedListTwo.next
+
+        if carry:
+            prev.next = LinkedList(value=carry)
+
+        return dummy_node.next
+    finally:
+        initial_one_head.next = initial_one_next
+        initial_two_head.next = initial_two_next
+
+
 def print_list(node):
     while node is not None:
         print(node.value)

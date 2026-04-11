@@ -25,35 +25,6 @@ def recurse_branch_sums(node, current_sum, output):
         recurse_branch_sums(node.right, current_sum, output)
 
 
-# NOTE: Revision code.
-
-
-class BinaryTree:
-    def __init__(self, value):
-        self.value = value
-        self.left = None
-        self.right = None
-
-
-def recurse_branch_sums(node, output, current_sum=0):
-    if node.left:
-        # NOTE: Recurse left.
-        recurse_branch_sums(node.left, output, current_sum=current_sum + node.value)
-
-    if node.right:
-        # NOTE: Recurse right.
-        recurse_branch_sums(node.right, output, current_sum=current_sum + node.value)
-
-    if node.left is None and node.right is None:
-        output.append(current_sum + node.value)
-
-
-def branchSums(root):
-    output = []
-    recurse_branch_sums(root, output)
-    return output
-
-
 def test():
     root = BinaryTree(1)
     two = BinaryTree(2)

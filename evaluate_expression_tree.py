@@ -8,35 +8,25 @@ class BinaryTree:
         self.right = right
 
 
-def evaluateExpressionTree(tree):
-    return recurse_evaluate_expression_tree(tree)
+def recurse_evaluation(node):
+    value = node.value
 
-
-def recurse_evaluate_expression_tree(node):
-    if node.value not in OPERATORS:
-        value = node.value
+    if value in OPERATORS:
+        if value == -1:
+            return recurse_evaluation(node.left) + recurse_evaluation(node.right)
+        elif value == -2:
+            return recurse_evaluation(node.left) - recurse_evaluation(node.right)
+        elif value == -3:
+            return int(recurse_evaluation(node.left) / recurse_evaluation(node.right))
+        elif value == -4:
+            return recurse_evaluation(node.left) * recurse_evaluation(node.right)
+    else:
         return value
 
-    op = node.value
-    if op == -1:
-        return recurse_evaluate_expression_tree(
-            node.left
-        ) + recurse_evaluate_expression_tree(node.right)
-    elif op == -2:
-        return recurse_evaluate_expression_tree(
-            node.left
-        ) - recurse_evaluate_expression_tree(node.right)
-    elif op == -3:
-        return int(
-            recurse_evaluate_expression_tree(node.left)
-            / recurse_evaluate_expression_tree(node.right)
-        )
-    elif op == -4:
-        return recurse_evaluate_expression_tree(
-            node.left
-        ) * recurse_evaluate_expression_tree(node.right)
-    else:
-        raise RuntimeError("Invalid Operator!")
+
+def evaluateExpressionTree(tree):
+    root = tree
+    return recurse_evaluation(root)
 
 
 def test():

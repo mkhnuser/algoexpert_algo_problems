@@ -1,17 +1,19 @@
-def nodeDepths(root):
-    depth = 0
-    return recurse_node_depths(root, depth)
-
-
 def recurse_node_depths(node, depth):
-    if not node:
+    if node is None:
         return 0
 
-    left_sum = recurse_node_depths(node.left, depth + 1)
-    right_sum = recurse_node_depths(node.right, depth + 1)
-    return depth + left_sum + right_sum
+    left_depth_summation = recurse_node_depths(node.left, depth=depth + 1)
+    right_depth_summation = recurse_node_depths(node.right, depth=depth + 1)
+    return depth + left_depth_summation + right_depth_summation
 
 
+def nodeDepths(root):
+    # NOTE: The depth of the root is 0.
+    # The depth of the first "layer" is 1, and so on.
+    return recurse_node_depths(root, 0)
+
+
+# This is the class of the input binary tree.
 class BinaryTree:
     def __init__(self, value):
         self.value = value

@@ -5,26 +5,40 @@ class BinaryTree:
         self.right = right
 
 
-def binaryTreeDiameter(tree):
-    return recurse_binary_tree_diameter(tree)[-1]
+def find_height(node):
+    if node is None:
+        return -1
+
+    left_subtree_height = find_height(node.left)
+    right_subtree_height = find_height(node.right)
+    return max(left_subtree_height, right_subtree_height) + 1
 
 
+# NOTE: The solution is inefficient since it invokes height finding at each level.
 def recurse_binary_tree_diameter(node):
     if node is None:
-        # NOTE: Return height, diameter at the same time.
-        return -1, 0
+        return 0
 
-    left_height, left_diameter = recurse_binary_tree_diameter(node.left)
-    right_height, right_diameter = recurse_binary_tree_diameter(node.right)
+    if node.left is None and node.right is None:
+        return 0
 
-    height = max(left_height, right_height) + 1
-    diameter_through_node = left_height + right_height + 2
-    diameter = max(diameter_through_node, left_diameter, right_diameter)
+    current_level_diameter = (
+        (find_height(node.left) if node.left is not None else 0)
+        + (find_height(node.right) if node.right is not None else 0)
+        + (2 if node.right is not None and node.left is not None else 1)
+    )
+    left_subtree_diameter = recurse_binary_tree_diameter(node.left)
+    right_subtree_diamter = recurse_binary_tree_diameter(node.right)
 
-    return height, diameter
+    return max(current_level_diameter, left_subtree_diameter, right_subtree_diamter)
 
 
-def test():
+def binaryTreeDiameter(tree):
+    root = tree
+    return recurse_binary_tree_diameter(root)
+
+
+def test_one():
     root = BinaryTree(1)
 
     two = BinaryTree(2)
@@ -54,5 +68,14 @@ def test():
     print(binaryTreeDiameter(root))
 
 
+def test_two():
+    root = BinaryTree(1)
+    two = BinaryTree(2)
+
+    root.left = two
+    print(binaryTreeDiameter(root))
+
+
 if __name__ == "__main__":
-    test()
+    test_one()
+    test_two()

@@ -35,3 +35,29 @@ def recurse_height_balanced_binary_tree(node):
 def heightBalancedBinaryTree(tree):
     root = tree
     return recurse_height_balanced_binary_tree(root)
+
+
+# NOTE: The solution above is inefficient for the reasons similar to "find binary tree diameter" problem.
+# Let's try "remembering" height.
+
+
+class BinaryTree:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+
+def recurse_height_balanced_binary_tree(node):
+    if node is None:
+        # NOTE: (height, is_balanced)
+        return (0, True)
+    l = recurse_height_balanced_binary_tree(node.left)
+    r = recurse_height_balanced_binary_tree(node.right)
+    is_balanced = (abs(l[0] - r[0]) <= 1) and l[1] and r[1]
+    return ((max(l[0], r[0]) + 1), is_balanced)
+
+
+def heightBalancedBinaryTree(tree):
+    root = tree
+    return recurse_height_balanced_binary_tree(root)[1]

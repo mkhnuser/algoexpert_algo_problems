@@ -1,3 +1,4 @@
+# NOTE: The solution is inefficient since it invokes height finding at each level.
 class BinaryTree:
     def __init__(self, value, left=None, right=None):
         self.value = value
@@ -14,7 +15,6 @@ def find_height(node):
     return max(left_subtree_height, right_subtree_height) + 1
 
 
-# NOTE: The solution is inefficient since it invokes height finding at each level.
 def recurse_binary_tree_diameter(node):
     if node is None:
         return 0
@@ -36,6 +36,43 @@ def recurse_binary_tree_diameter(node):
 def binaryTreeDiameter(tree):
     root = tree
     return recurse_binary_tree_diameter(root)
+
+
+# NOTE: OK, the solution above is not efficient because of constant find height invocation.
+# We need a way to "remember" the height.
+from typing import NamedTuple
+
+
+class NodeInfo(NamedTuple):
+    diameter: int
+    depth: int
+
+
+class BinaryTree:
+    def __init__(self, value, left=None, right=None):
+        self.value = value
+        self.left = left
+        self.right = right
+
+
+def recurse_binary_tree_diameter(node):
+    if node is None:
+        # NOTE: We are past the leaf node.
+        return NodeInfo(diameter=0, depth=0)
+
+    left_subtree_info = recurse_binary_tree_diameter(node.left)
+    right_subtree_info = recurse_binary_tree_diameter(node.right)
+    depth = max(left_subtree_info.depth, right_subtree_info.depth) + 1
+    diameter = left_subtree_info.depth + right_subtree_info.depth
+    return NodeInfo(
+        depth=depth,
+        diameter=max(diameter, left_subtree_info.diameter, right_subtree_info.diameter),
+    )
+
+
+def binaryTreeDiameter(tree):
+    root = tree
+    return recurse_binary_tree_diameter(root).diameter
 
 
 def test_one():

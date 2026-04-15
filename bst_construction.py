@@ -1,142 +1,99 @@
 class BST:
-    # NOTE: We hack our way to satisfy a rather strange requirement that
-    # We can't delete a node in a BST if it's the only node (if it's root and no other nodes are present).
-    bst_size = 1
-
     def __init__(self, value):
         self.value = value
         self.left = None
         self.right = None
 
+    def recurse_insertion(self, current_node, node_to_insert):
+        if current_node is None:
+            return node_to_insert
+
+        if node_to_insert.value >= current_node.value:
+            current_node.right = self.recurse_insertion(
+                current_node.right,
+                node_to_insert,
+            )
+        else:
+            current_node.left = self.recurse_insertion(
+                current_node.left,
+                node_to_insert,
+            )
+
+        return current_node
+
     def insert(self, value):
-        node = BST(value)
-        self.recurse_insertion(self, node)
-        self.bst_size += 1
+        self.recurse_insertion(self, BST(value))
         return self
 
-    def recurse_insertion(self, current_node, node):
-        if current_node.value <= node.value:
-            # NOTE: Go right.
-            if current_node.right is None:
-                current_node.right = node
-            else:
-                self.recurse_insertion(current_node.right, node)
-        else:
-            # NOTE: Go left.
-            if current_node.left is None:
-                current_node.left = node
-            else:
-                self.recurse_insertion(current_node.left, node)
+    def recurse_contains(self, node, node_to_check):
+        if node is None:
+            return False
+        if node.value == node_to_check.value:
+            return True
+        if node_to_check.value > node.value:
+            return self.recurse_contains(node.right, node_to_check)
+        return self.recurse_contains(node.left, node_to_check)
 
     def contains(self, value):
-        node = BST(value)
-        return self.recurse_contains(self, node)
+        return self.recurse_contains(self, BST(value))
 
-    def recurse_contains(self, current_node, node):
+    def find_node_and_its_parent_by_value(self, current_node, parent, value):
         if current_node is None:
-            return False
-        if current_node.value == node.value:
-            return True
-
-        if current_node.value < node.value:
-            # NOTE: Search right.
-            return self.recurse_contains(current_node.right, node)
-        else:
-            # NOTE: Search left.
-            return self.recurse_contains(current_node.left, node)
-
-    def remove(self, value):
-        if self.bst_size <= 1:
-            # NOTE: If there is only one node in the tree, don't remove it!
-            return
-
-        p_d, d = self.find_node_and_its_parent_by_value(None, self, value)
-
-        if d is None:
-            # NOTE: We haven't found a node to be deleted, so just terminate this procedure.
-            return
-
-        new_node = self.remove_node(p_d, d)
-        self.bst_size -= 1
-        return new_node
-
-    def remove_node(self, p_d, d):
-        if d.left is None:
-            # NOTE: Transplant d with its right child (if any).
-            self.transplant(p_d, d, d, d.right)
-            return d.right
-        elif d.right is None:
-            # NOTE: Transplant d with its left child (if any).
-            self.transplant(p_d, d, d, d.left)
-            return d.left
-        else:
-            # NOTE: d has both the left child and the right child.
-            # Therefore, we have to transplant d with either its successor or predecessor.
-            #
-            # Suppose succ is the successor of d.
-            # Consider two cases: succ is the direct right child of d,
-            # and succ is not the direct right child of d.
-            #
-            # If succ is the direct child, just transplant the whole branch of the tree.
-            # Otherwise, transplant succ with its right child and only then transplant d with succ.
-            #
-            # Overall, make sure to update all the references.
-            p_s, succ = self.find_minimum_and_its_parent(d, d.right)
-
-            if succ != d.right:
-                # NOTE: Make sure to transplant the right child of a successor (if any).
-                self.transplant(p_s, succ, succ, succ.right)
-                succ.right = d.right
-
-            self.transplant(p_d, d, d, succ)
-            succ.left = d.left
-            return succ
-
-    def transplant(self, p1, n1, p2, n2):
-        # NOTE: Transplant n1 with n2.
-        # p1 is the parent of n1, p2 is the parent of n2.
-        if p1 is None:
-            pass
-        elif n1 == p1.left:
-            p1.left = n2
-        else:
-            p1.right = n2
-
-        if n2 is not None:
-            pass
-
-    def find_minimum_and_its_parent(self, parent, node):
-        while node.left is not None:
-            parent = node
-            node = node.left
-        return parent, node
-
-    def find_node_and_its_parent_by_value(self, parent_node, current_node, value):
-        if current_node is None:
-            return parent_node, None
+            return None, None
 
         if current_node.value == value:
-            return parent_node, current_node
+            return parent, current_node
 
-        if current_node.value < value:
+        if value > current_node.value:
             return self.find_node_and_its_parent_by_value(
-                current_node,
-                current_node.right,
-                value,
+                current_node=current_node.right,
+                parent=current_node,
+                value=value,
             )
         return self.find_node_and_its_parent_by_value(
-            current_node,
-            current_node.left,
-            value,
+            current_node=current_node.left,
+            parent=current_node,
+            value=value,
         )
 
+    def find_min(self, node):
+        while node.left is not None:
+            node = node.left
+        return node
 
-def test():
-    root = BST(10)
-    for value in (5, 15, 2, 5, 13, 22, 1, 12, 14):
-        root.insert(value)
-    breakpoint()
+    def find_max(self, node):
+        while node.right is not None:
+            node = node.right
+        return node
 
+    def is_the_only_node(self, p, n):
+        return p is None and n.left is None and n.right is None
 
-if __name__ == "__main__":
-    test()
+    def remove(self, value, p=None):
+        p, n = self.find_node_and_its_parent_by_value(
+            current_node=self,
+            parent=p,
+            value=value,
+        )
+        if n is None or self.is_the_only_node(p, n):
+            return
+
+        if n.left and n.right:
+            s = n.right.find_min(n.right)
+            n.value = s.value
+            n.right.remove(s.value, n)
+        elif n.left is None and n.right is None:
+            if p.left is n:
+                p.left = None
+            elif p.right is n:
+                p.right = None
+        elif n.left:
+            pred = n.left.find_max(n.left)
+            n.value = pred.value
+            n.left.remove(pred.value, n)
+        elif n.right:
+            s = n.right.find_min(n.right)
+            n.value = s.value
+            n.right.remove(s.value, n)
+
+        return self

@@ -5,28 +5,29 @@ class BST:
         self.right = None
 
 
-def validateBst(tree):
-    return recurse_validate_bst(
-        node=tree,
-        lower_bound=float("-inf"),
-        upper_bound=float("+inf"),
-    )
-
-
-def recurse_validate_bst(node, lower_bound, upper_bound):
+def recurse_validation(node, lower_bound, upper_bound):
     if node is None:
         return True
 
-    # NOTE: A normal condition: left < node.value <= right.
-    if node.value >= upper_bound or node.value < lower_bound:
-        return False
+    return (
+        (node.value >= lower_bound and node.value < upper_bound)
+        and recurse_validation(
+            node.left,
+            lower_bound=lower_bound,
+            upper_bound=node.value,
+        )
+        and recurse_validation(
+            node.right,
+            lower_bound=node.value,
+            upper_bound=upper_bound,
+        )
+    )
 
-    return recurse_validate_bst(
-        node.left,
-        lower_bound=lower_bound,
-        upper_bound=node.value,
-    ) and recurse_validate_bst(
-        node.right,
-        lower_bound=node.value,
-        upper_bound=upper_bound,
+
+def validateBst(tree):
+    root = tree
+    return recurse_validation(
+        node=root,
+        lower_bound=float("-inf"),
+        upper_bound=float("+inf"),
     )

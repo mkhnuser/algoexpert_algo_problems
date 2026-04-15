@@ -1,38 +1,43 @@
 def inOrderTraverse(tree, array):
-    recurse_in_order(tree, array)
+    root = tree
+    array = []
+
+    def recurse_in(node, array):
+        if node is None:
+            return
+        recurse_in(node.left, array)
+        array.append(node.value)
+        recurse_in(node.right, array)
+
+    recurse_in(root, array)
     return array
-
-
-def recurse_in_order(tree, array):
-    if tree is not None:
-        recurse_in_order(tree.left, array)
-        array.append(tree.value)
-        recurse_in_order(tree.right, array)
 
 
 def preOrderTraverse(tree, array):
-    recurse_pre_order(tree, array)
+    root = tree
+    array = []
+
+    def recurse_pre(node, array):
+        if node is None:
+            return
+        array.append(node.value)
+        recurse_pre(node.left, array)
+        recurse_pre(node.right, array)
+
+    recurse_pre(root, array)
     return array
-
-
-def recurse_pre_order(tree, array):
-    array.append(tree.value)
-
-    for child in (tree.left, tree.right):
-        if child is None:
-            continue
-        recurse_pre_order(child, array)
 
 
 def postOrderTraverse(tree, array):
-    recurse_post_order(tree, array)
+    root = tree
+    array = []
+
+    def recurse_post(node, array):
+        if node is None:
+            return
+        recurse_post(node.left, array)
+        recurse_post(node.right, array)
+        array.append(node.value)
+
+    recurse_post(root, array)
     return array
-
-
-def recurse_post_order(tree, array):
-    for child in (tree.left, tree.right):
-        if child is None:
-            continue
-        recurse_post_order(child, array)
-
-    array.append(tree.value)

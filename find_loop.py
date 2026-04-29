@@ -1,3 +1,6 @@
+FLOAT_INCREMENT = 0.5
+
+
 class LinkedList:
     def __init__(self, value):
         self.value = value
@@ -5,14 +8,33 @@ class LinkedList:
 
 
 def findLoop(head):
-    seen = set()
+    original_head = head
+    loop_node = None
 
     while head is not None:
-        if head in seen:
-            return head
+        if not float(head.value).is_integer():
+            loop_node = head
+            break
 
-        seen.add(head)
+        head.value += FLOAT_INCREMENT
         head = head.next
+
+    head = original_head
+
+    counter = 0
+    while head is not None:
+        if head is loop_node:
+            counter += 1
+            if counter == 2:
+                # NOTE: At this point we've encoutered the loop node for the second time.
+                # Therefore, all the values have been restored.
+                break
+
+        head.value -= FLOAT_INCREMENT
+        head.value = int(head.value)
+        head = head.next
+
+    return loop_node
 
 
 def print_list(node):

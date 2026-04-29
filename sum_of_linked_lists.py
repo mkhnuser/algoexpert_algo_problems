@@ -5,94 +5,49 @@ class LinkedList:
 
 
 def sumOfLinkedLists(linkedListOne, linkedListTwo):
-    # NOTE: Create a new linked list.
-    list_one_digits = ""
-    one_initial_head = linkedListOne
-    list_one_head_next = linkedListOne.next
-
-    while linkedListOne is not None:
-        list_one_digits += str(linkedListOne.value)
-
-        if linkedListOne.next is None:
-            one_initial_head.next = list_one_head_next
-            break
-
-        linkedListOne = linkedListOne.next
-
-    list_one_num = int(list_one_digits[::-1])
-
-    list_two_digits = ""
-    two_initial_head = linkedListTwo
-    list_two_head_next = linkedListTwo.next
-
-    while linkedListTwo is not None:
-        list_two_digits += str(linkedListTwo.value)
-
-        if linkedListTwo.next is None:
-            two_initial_head.next = list_two_head_next
-            break
-
-        linkedListTwo = linkedListTwo.next
-
-    linkedListTwo.next = list_two_head_next
-    list_two_num = int(list_two_digits[::-1])
-
-    summation = list_one_num + list_two_num
-    summation_repr = str(summation)[::-1]
-
-    head_node = LinkedList(value=None)
-    prev = head_node
-
-    for i, char in enumerate(summation_repr):
-        if i == 0:
-            head_node.value = int(char)
-            continue
-
-        new_node = LinkedList(value=int(char))
-        prev.next = new_node
-        prev = new_node
-
-    return head_node
+    new_one = reverse_linked_list(linkedListOne)
+    new_two = reverse_linked_list(linkedListTwo)
+    sum_repr_one = sum_repr_list(new_one)
+    sum_repr_two = sum_repr_list(new_two)
+    summation = int(sum_repr_one) + int(sum_repr_two)
+    summation_repr = str(summation)
+    constructed_head = construct_list(summation_repr)
+    new_constructed_head = reverse_linked_list(constructed_head)
+    return new_constructed_head
 
 
-def sumOfLinkedLists(linkedListOne, linkedListTwo):
-    # NOTE: Example.
-    # 2 4 7 1 = 1742
-    # 9 4 5 = 549
-    # Their sum: 2291 -> we output: 1 9 2 2 (as a new list).
-    dummy_node = LinkedList(value=-1)
-    prev = dummy_node
-    carry = 0
+def construct_list(summation_repr):
+    head = LinkedList(int(summation_repr[0]))
+    current = head
 
-    # NOTE: We need to reset the lists to their initial states.
-    # After we are done.
-    initial_one_head = linkedListOne
-    initial_two_head = linkedListTwo
-    initial_one_next = linkedListOne.next
-    initial_two_next = linkedListTwo.next
+    for char in summation_repr[1:]:
+        current.next = LinkedList(None)
+        current = current.next
+        current.value = int(char)
 
-    try:
-        while linkedListOne is not None or linkedListTwo is not None:
-            value_one = linkedListOne.value if linkedListOne else 0
-            value_two = linkedListTwo.value if linkedListTwo else 0
-            summation = value_one + value_two + carry
-            carry, remainder = divmod(summation, 10)
-            res = LinkedList(value=remainder)
-            prev.next = res
-            prev = res
+    return head
 
-            if linkedListOne is not None:
-                linkedListOne = linkedListOne.next
-            if linkedListTwo is not None:
-                linkedListTwo = linkedListTwo.next
 
-        if carry:
-            prev.next = LinkedList(value=carry)
+def sum_repr_list(list_):
+    sum_repr = ""
 
-        return dummy_node.next
-    finally:
-        initial_one_head.next = initial_one_next
-        initial_two_head.next = initial_two_next
+    while list_ is not None:
+        sum_repr += str(list_.value)
+        list_ = list_.next
+
+    return sum_repr
+
+
+def reverse_linked_list(list_):
+    if list_ is None:
+        return None
+    if list_.next is None:
+        return list_
+
+    new_head = reverse_linked_list(list_.next)
+    list_.next.next = list_
+    list_.next = None
+    return new_head
 
 
 def print_list(node):

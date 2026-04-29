@@ -5,29 +5,16 @@ class LinkedList:
 
 
 def removeDuplicatesFromLinkedList(linkedList):
-    current_node = linkedList
+    if linkedList is None:
+        return None
 
-    while current_node is not None:
-        next_node = current_node.next
+    c = linkedList
 
-        while next_node is not None and current_node.value == next_node.value:
-            next_node = next_node.next
-
-        current_node.next = next_node
-        current_node = next_node
-
-    return linkedList
-
-
-def removeDuplicatesFromLinkedList(linkedList):
-    # NOTE: 1 1 3 4 4 4 5 6 6 None
-    # 1 3 4 5 6
-    head = linkedList
-
-    while head is not None:
-        while head.next and head.next.value == head.value:
-            head.next = head.next.next
-        head = head.next
+    while c.next is not None:
+        if c.value == c.next.value:
+            c.next = c.next.next
+        else:
+            c = c.next
 
     return linkedList
 

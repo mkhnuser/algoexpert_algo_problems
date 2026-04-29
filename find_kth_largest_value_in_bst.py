@@ -5,17 +5,16 @@ class BST:
         self.right = right
 
 
+def do_in_order(node, order):
+    if node is None:
+        return
+    do_in_order(node.left, order)
+    order.append(node.value)
+    do_in_order(node.right, order)
+
+
 def findKthLargestValueInBst(tree, k):
-    # NOTE:
-    # 1. Calc. in-order traversal.
-    # 2. Find kth element from the end of an array.
-    array = []
-    recurse_in_order(tree, array)
-    return array[-k].value
-
-
-def recurse_in_order(node, array):
-    if node is not None:
-        recurse_in_order(node.left, array)
-        array.append(node)
-        recurse_in_order(node.right, array)
+    # NOTE: O(n) time, O(n) space.
+    order = []
+    do_in_order(tree, order)
+    return order[-k]

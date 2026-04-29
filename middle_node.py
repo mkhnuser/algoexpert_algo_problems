@@ -1,4 +1,3 @@
-# This is an input class. Do not edit.
 class LinkedList:
     def __init__(self, value):
         self.value = value
@@ -6,43 +5,27 @@ class LinkedList:
 
 
 def middleNode(linkedList):
-    node = linkedList
-    slow_pointer = node
-    fast_pointer = node
-
-    # NOTE: 1 2 None.
-    # 1 2 3 None.
-    # 1.
-    while fast_pointer is not None and fast_pointer.next is not None:
-        slow_pointer = slow_pointer.next
-        fast_pointer = fast_pointer.next.next
-
-    return slow_pointer
-
-
-def middleNode(linkedList):
-    # NOTE: a b c -> b c
-    #       0 1 2
-    #       a b c d -> c d
-    #       0 1 2 3
-
-    head = linkedList
-    count = 0
-
-    while head is not None:
-        count += 1
-        head = head.next
-
-    # NOTE: We separate a number of elements from their indexes.
-    middle_index = count // 2
-
+    list_ = linkedList
     head = linkedList
 
-    while head is not None and middle_index > 0:
-        middle_index -= 1
-        head = head.next
+    counter = 0
+    while list_ is not None:
+        counter += 1
+        list_ = list_.next
 
-    return head
+    # NOTE: a b c -> counter = 3 -> middle_index = 1.
+    # a b c d -> counter = 4. -> middle_index = 2.
+
+    middle_index = counter // 2
+    index_counter = 0
+    list_ = head
+
+    while list_ is not None:
+        if index_counter == middle_index:
+            return list_
+
+        index_counter += 1
+        list_ = list_.next
 
 
 def test():

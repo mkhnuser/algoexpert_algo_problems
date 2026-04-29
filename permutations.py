@@ -1,32 +1,29 @@
 def getPermutations(array):
     if not array:
-        return array
-
-    perms = []
-    helper(array, [], perms)
-    return perms
+        return []
+    return recurse(array)
 
 
-def helper(array, perm, perms):
-    if not array:
-        perms.append(perm)
-    else:
-        for i in range(len(array)):
-            new_array = array.copy()
-            new_array.pop(i)
+def recurse(array):
+    if len(array) == 0:
+        return [[]]
 
-            leading_number = array[i]
+    permutations = recurse(array[1:])
+    res = []
 
-            new_perm = perm.copy()
-            new_perm.append(leading_number)
+    for p in permutations:
+        for i in range(len(p) + 1):
+            c = p.copy()
+            c.insert(i, array[0])
+            res.append(c)
 
-            helper(new_array, new_perm, perms)
+    return res
 
 
 def test():
-    print(getPermutations([]))
-    print(getPermutations([1, 2]))
-    print(getPermutations([1, 2, 3]))
+    input = [1, 2, 3]
+    output = getPermutations(input)
+    print(output)
 
 
 if __name__ == "__main__":

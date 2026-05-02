@@ -1,62 +1,60 @@
+# def searchInSortedMatrix(matrix, target):
+#     for i in range(len(matrix)):
+#         array = matrix[i]
+#         search_result = binary_search(
+#             array=array,
+#             target=target,
+#             lower_index=0,
+#             upper_index=len(array) - 1,
+#         )
+#         if search_result is not None:
+#             j = search_result
+#             return [i, j]
+#
+#     return [-1, -1]
+#
+#
+# def binary_search(array, target, lower_index, upper_index):
+#     if lower_index > upper_index:
+#         return None
+#
+#     middle_index = (lower_index + upper_index) // 2
+#     c = array[middle_index]
+#
+#     if c == target:
+#         return middle_index
+#     elif c < target:
+#         return binary_search(
+#             array,
+#             target,
+#             lower_index=middle_index + 1,
+#             upper_index=upper_index,
+#         )
+#     return binary_search(
+#         array,
+#         target,
+#         lower_index=lower_index,
+#         upper_index=middle_index - 1,
+#     )
+
+
 def searchInSortedMatrix(matrix, target):
-    # NOTE: O(n * log(n)).
-    for row_index in range(len(matrix)):
-        search_result = bin_search_row(matrix[row_index], target)
-        if search_result is not None:
-            return [row_index, search_result]
+    if not matrix:
+        return [-1, -1]
 
-    return [-1, -1]
+    i = 0
+    j = len(matrix[0]) - 1
 
+    while (i >= 0 and i <= (len(matrix) - 1)) and (
+        j >= 0 and j <= (len(matrix[0]) - 1)
+    ):
+        element_under_consideration = matrix[i][j]
 
-def bin_search_row(row, target):
-    left = 0
-    right = len(row) - 1
-
-    while left <= right:
-        middle = (left + right) // 2
-        el = row[middle]
-        if el == target:
-            return middle
-        elif el > target:
-            right = middle - 1
+        if element_under_consideration == target:
+            return [i, j]
+        elif element_under_consideration > target:
+            j -= 1
         else:
-            left = middle + 1
-
-    return None
-
-
-def searchInSortedMatrix(matrix, target):
-    row = 0
-    col = len(matrix[0]) - 1
-
-    while row < len(matrix) and col >= 0:
-        val = matrix[row][col]
-
-        if target == val:
-            return [row, col]
-
-        if val < target:
-            row += 1
-        elif val > target:
-            col -= 1
+            i += 1
 
     return [-1, -1]
-
-
-def test():
-    print(
-        searchInSortedMatrix(
-            [
-                [1, 2, 3],
-                [4, 5, 6],
-                [7, 8, 9],
-                [10, 11, 12],
-                [13, 14, 15],
-            ],
-            target=9,
-        )
-    )
-
-
-if __name__ == "__main__":
-    test()

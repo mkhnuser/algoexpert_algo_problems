@@ -1,4 +1,4 @@
-from queue import Queue
+from collections import deque
 
 
 class Node:
@@ -11,21 +11,16 @@ class Node:
         return self
 
     def breadthFirstSearch(self, array):
-        self.bfs(self, array)
+        d = deque()
+        d.append(self)
+
+        while len(d) > 0:
+            c = d.popleft()
+            array.append(c.name)
+            for child in c.children:
+                d.append(child)
+
         return array
-
-    def bfs(self, node, array):
-        q = Queue()
-        q.put(node)
-
-        while q.qsize() > 0:
-            v = q.get()
-            array.append(v.name)
-
-            for child in v.children:
-                q.put(child)
-
-            q.task_done()
 
 
 def test():

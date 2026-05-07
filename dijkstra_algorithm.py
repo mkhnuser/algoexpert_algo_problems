@@ -5,18 +5,18 @@ import math
 # For this, a min heap is a perfect choice.
 
 
-class MinHeap:
+class MinHeap[T]:
     def __init__(self):
         self.data = []  # NOTE: This array will be preserve min heap property.
 
-    def insert(self, datum: int) -> None:
+    def insert(self, datum: T) -> None:
         """Insert an element into a min heap."""
         # NOTE: Append to the end.
         # Sift up.
         self.data.append(datum)
         self._sift_up(len(self.data) - 1)
 
-    def delete(self) -> int:
+    def delete(self) -> T:
         """Delete the min element from a min heap."""
         # NOTE: Pop the root.
         # Put the last element at the root.
@@ -99,7 +99,7 @@ def find_min_distance_vertex(distances, visited):
     return min_vertex
 
 
-def dijkstrasAlgorithm(start, edges):
+def simple_dijkstra(start, edges):
     # NOTE: A graph is directed.
     n = len(edges)
     distances = [float("+inf")] * n
@@ -122,6 +122,43 @@ def dijkstrasAlgorithm(start, edges):
         visited[c] = True
 
     return list(map(lambda x: x if not math.isinf(x) else -1, distances))
+
+
+def heap_dijkstra(start, edges):
+    # NOTE: A graph is directed.
+    n = len(edges)
+    distances = [float("+inf")] * n
+    distances[start] = 0
+    previous = [None] * n
+    visited = [False] * n
+    min_heap = MinHeap()
+    # NOTE: First sort by distance and then by node number.
+    min_heap.insert((distances[start], start))
+
+    while True:
+        try:
+            c_dist, c = min_heap.delete()
+        except Exception:
+            # NOTE: Assume any exception denotes an empty heap.
+            break
+
+        if visited[c]:
+            continue
+
+        for neighbor, dist in edges[c]:
+            dist_from_current = distances[c] + dist
+            if distances[neighbor] > dist_from_current:
+                distances[neighbor] = dist_from_current
+                previous[neighbor] = c
+                min_heap.insert((dist_from_current, neighbor))
+
+        visited[c] = True
+
+    return list(map(lambda x: x if not math.isinf(x) else -1, distances))
+
+
+def dijkstrasAlgorithm(start, edges):
+    return heap_dijkstra(start, edges)
 
 
 def test():

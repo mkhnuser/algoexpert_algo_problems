@@ -1,35 +1,36 @@
 def firstNonRepeatingCharacter(string):
-    for i in range(len(string)):
-        char = string[i]
+    mapping = {}
+    # NOTE: Store character -> [count, index].
 
-        for j in range(len(string)):
-            if i == j:
-                continue
+    for i, char in enumerate(string):
+        if char not in mapping:
+            mapping[char] = [0, i]
+        mapping[char][0] += 1
 
-            second_char = string[j]
-            if second_char == char:
-                break
-        else:
-            return i
+    for char in mapping:
+        count, index = mapping[char]
+        if count == 1:
+            return index
 
     return -1
+
+
+a_ord = ord("a")
 
 
 def firstNonRepeatingCharacter(string):
-    babies = {}
-
-    for char in string:
-        if char not in babies:
-            babies[char] = 1
-        else:
-            babies[char] += 1
+    n = len(string)
+    counter = [0] * 26
 
     for i, char in enumerate(string):
-        if babies[char] == 1:
+        char_ord = ord(char) - a_ord
+        counter[char_ord] += 1
+
+    for i in range(n):
+        char = string[i]
+        char_ord = ord(char)
+        shifted_ord = char_ord - a_ord
+        if counter[shifted_ord] == 1:
             return i
 
     return -1
-
-
-if __name__ == "__main__":
-    print(firstNonRepeatingCharacter("abcdcaf"))

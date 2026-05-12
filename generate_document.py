@@ -2,23 +2,25 @@ def generateDocument(characters, document):
     if document == "":
         return True
 
-    chars_mapping = {}
-    doc_mapping = {}
+    characters_frequency_mapping = {}
 
     for char in characters:
-        if char not in chars_mapping:
-            chars_mapping[char] = 0
-        chars_mapping[char] += 1
+        if char not in characters_frequency_mapping:
+            characters_frequency_mapping[char] = 0
+        characters_frequency_mapping[char] += 1
 
-    for doc in document:
-        if doc not in doc_mapping:
-            doc_mapping[doc] = 0
-        doc_mapping[doc] += 1
+    document_frequency_mapping = {}
 
-    for doc, value in doc_mapping.items():
-        if doc not in chars_mapping:
+    for char in document:
+        if char not in document_frequency_mapping:
+            document_frequency_mapping[char] = 0
+        document_frequency_mapping[char] += 1
+
+    for char in document:
+        if char not in characters_frequency_mapping:
             return False
-        if value > chars_mapping[doc]:
+
+        if characters_frequency_mapping[char] < document_frequency_mapping[char]:
             return False
 
     return True
@@ -28,25 +30,20 @@ def generateDocument(characters, document):
     if document == "":
         return True
 
-    available_chars = {}
+    frequency_mapping = {}
+
+    for char in document:
+        if char not in frequency_mapping:
+            frequency_mapping[char] = 0
+        frequency_mapping[char] -= 1
 
     for char in characters:
-        if char not in available_chars:
-            available_chars[char] = 1
-        else:
-            available_chars[char] += 1
+        if char not in frequency_mapping:
+            frequency_mapping[char] = 0
+        frequency_mapping[char] += 1
 
-    for doc_char in document:
-        if doc_char not in available_chars:
-            return False
-        available_chars[doc_char] -= 1
-
-    for value in available_chars.values():
-        if value < 0:
+    for char, freq in frequency_mapping.items():
+        if freq < 0:
             return False
 
     return True
-
-
-if __name__ == "__main__":
-    print(generateDocument(characters="abcabc", document="aabbccc"))

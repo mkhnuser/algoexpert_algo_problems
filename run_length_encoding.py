@@ -1,54 +1,49 @@
 def runLengthEncoding(string):
+    if not string:
+        return ""
+
+    # NOTE: At this point, a string contains at least one character.
+
+    turning_point = 10
+    output_list = []
     i = 0
     j = 0
     n = len(string)
 
-    if n == 0:
-        return string
-
-    result = []
-
-    while i < n:
-        if string[i] == string[j]:
-            i += 1
+    while i < n and j < n:
+        # NOTE: While we are within string bounds...
+        current_run = (j - i) + 1
+        if string[i] == string[j] and current_run < turning_point:
+            j += 1
         else:
-            result.append(f"{(i - j)}{string[j]}")
-            j = i
+            # NOTE: The branching can be omitted,
+            # but it illustrated the point nicely.
+            if string[i] != string[j]:
+                output_list.append(f"{current_run - 1}{string[j - 1]}")
+                i = j
+            else:
+                # NOTE: Handle: current_run >= turning_point.
+                output_list.append(f"{current_run - 1}{string[j - 1]}")
+                i = j
 
-        if (i - j) + 1 >= 9:
-            if i >= n:
-                i -= 1
-            if string[i] == string[j]:
-                result.append(f"{i - j + 1}{string[j]}")
-                i += 1
-                j = i
+    if i != n:
+        # NOTE: There is a leftover.
+        # NOTE: A..AA 10 times, for example.
+        leftover_length = len(string[i:])
+        leftover = string[i]
+        output_list.append(f"{leftover_length}{leftover}")
 
-    if j < i:
-        result.append(f"{len(string[j:i])}{string[j]}")
-
-    return "".join(result)
+    return "".join(output_list)
 
 
-def runLengthEncoding(string):
-    chars = []
-    run_length = 1
-
-    # NOTE: AAABB
-    for i in range(1, len(string)):
-        current_char = string[i]
-        prev_char = string[i - 1]
-
-        if current_char != prev_char or run_length >= 9:
-            chars.append(str(run_length))
-            chars.append(prev_char)
-            run_length = 0
-
-        run_length += 1
-
-    chars.append(str(run_length))
-    chars.append(string[len(string) - 1])
-    return "".join(chars)
+def test():
+    string = "A"
+    print(runLengthEncoding(string))
+    string = "AB"
+    print(runLengthEncoding(string))
+    string = "AAAAAAAAAAAAABBCCCCDD"
+    print(runLengthEncoding(string))
 
 
 if __name__ == "__main__":
-    print(runLengthEncoding("                          "))
+    test()

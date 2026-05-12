@@ -1,17 +1,22 @@
-import string as s
+a_ord = ord("a")
 
 
 def caesarCipherEncryptor(string, key):
-    mapping = {}
+    if key == 0:
+        return string
 
-    for i in range(len(s.ascii_lowercase)):
-        char = s.ascii_lowercase[i]
-        associated_char = s.ascii_lowercase[(i + key) % len(s.ascii_lowercase)]
-        mapping[char] = associated_char
+    result_list = []
 
-    translation_table = str.maketrans(mapping)
-    return string.translate(translation_table)
+    for char in string:
+        shifted_ord = ord(char) - a_ord
+        destination_ord = shifted_ord + key
+        destination_ord %= 26
+        destination_ord += a_ord
+        result_list.append(chr(destination_ord))
+
+    return "".join(result_list)
 
 
 if __name__ == "__main__":
-    print(caesarCipherEncryptor("abc", 2))
+    print(caesarCipherEncryptor("abc", 1))
+    print(caesarCipherEncryptor("abc", 26))

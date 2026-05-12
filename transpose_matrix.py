@@ -2,19 +2,15 @@ from pprint import pprint
 
 
 def transposeMatrix(matrix):
-    # NOTE: If n * n => n * n.
-    # If n * m => m * n.
-    transposed_matrix = [
-        [None for __ in range(len(matrix))] for _ in range(len(matrix[0]))
-    ]
+    n = len(matrix)
+    m = len(matrix[0])
 
-    for row_index in range(len(matrix)):
-        row = matrix[row_index]
-        for column_index in range(len(row)):
-            element_to_be_transposed = row[column_index]
-            transposed_matrix[column_index][row_index] = element_to_be_transposed
+    output = [[None for __ in range(n)] for _ in range(m)]
+    for i in range(n):
+        for j in range(m):
+            output[j][i] = matrix[i][j]
 
-    return transposed_matrix
+    return output
 
 
 if __name__ == "__main__":

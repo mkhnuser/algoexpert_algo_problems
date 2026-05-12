@@ -1,52 +1,55 @@
 def smallestDifference(arrayOne, arrayTwo):
     min_abs_diff = float("+inf")
-    output = [None, None]
+    first = None
+    second = None
+    for one in arrayOne:
+        for two in arrayTwo:
+            abs_diff = abs(one - two)
+            if abs_diff < min_abs_diff:
+                min_abs_diff = abs_diff
+                first = one
+                second = two
 
-    for num_one in arrayOne:
-        for num_two in arrayTwo:
-            diff = abs(num_one - num_two)
-            if diff < min_abs_diff:
-                min_abs_diff = diff
-                output[0] = num_one
-                output[1] = num_two
-
-    return output
+    return [first, second]
 
 
 def smallestDifference(arrayOne, arrayTwo):
     arrayOne.sort()
     arrayTwo.sort()
-    output = [None, None]
     min_abs_diff = float("+inf")
+    output = [None, None]
 
-    pointer_one = 0
-    pointer_two = 0
+    # [-1, 3, 5, 10, 20, 28]
+    # [15, 17, 26, 134, 135]
 
-    while pointer_one < len(arrayOne) and pointer_two < len(arrayTwo):
-        diff = abs(arrayOne[pointer_one] - arrayTwo[pointer_two])
+    i = 0
+    j = 0
 
-        if diff < min_abs_diff:
-            min_abs_diff = diff
-            output[0] = arrayOne[pointer_one]
-            output[1] = arrayTwo[pointer_two]
+    while i < len(arrayOne) and j < len(arrayTwo):
+        # NOTE: While both pointers are within bounds of both arrays.
+        one = arrayOne[i]
+        two = arrayTwo[j]
+        abs_diff = abs(one - two)
 
-        if arrayOne[pointer_one] == arrayTwo[pointer_two]:
+        if abs_diff < min_abs_diff:
+            min_abs_diff = abs_diff
+            output[0] = one
+            output[1] = two
+
+        if one == two:
             return output
-        elif arrayOne[pointer_one] < arrayTwo[pointer_two]:
-            pointer_one += 1
+        elif one < two:
+            i += 1
         else:
-            pointer_two += 1
+            j += 1
 
     return output
 
 
 def test():
-    print(
-        smallestDifference(
-            [-1, 5, 10, 20, 28, 3],
-            [26, 134, 135, 15, 17],
-        )
-    )
+    arrayOne = [-1, 5, 10, 20, 28, 3]
+    arrayTwo = [26, 134, 135, 15, 17]
+    print(smallestDifference(arrayOne, arrayTwo))
 
 
 if __name__ == "__main__":
